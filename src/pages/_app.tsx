@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 					<Icon
 						icon={theme === 'dark' ? 'bi:moon-stars-fill' : 'bi:sun-fill'}
 						fontSize={24}
-						className="styles.switchThemeIcon"
+						className="switchThemeIcon"
 						onClick={switchTheme}
 					/>
 				</div>
