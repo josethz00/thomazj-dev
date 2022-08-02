@@ -4,8 +4,8 @@ import React from 'react';
  *
  * @returns
  */
-const AboutMe = () => {
+const SocialMedia = () => {
 	return <div />;
 };
 
-export default AboutMe;
+export default SocialMedia;

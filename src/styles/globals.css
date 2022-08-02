@@ -21,6 +21,44 @@ button, input {
   box-sizing: border-box;
 }
 
+.container {
+  padding: 0 2rem;
+}
+
+.dark {
+	background-color: rgb(23, 22, 22);
+	color: #ccc;
+}
+
+.light {
+	background-color: #ccc;
+	color: rgb(23, 22, 22);
+}
+
+header.header {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+  border-bottom: 3px solid #373636;
+	height: 90px;
+}
+
+header.header > h3 {
+	text-transform: uppercase;
+	font-weight: 700;
+	font-style: italic;
+}
+
+.switchThemeIcon {
+	cursor: pointer;
+	transition: .5s ease-in-out;
+}
+
+.switchThemeIcon:hover {
+	opacity: 0.6;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
