@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
+import Link from 'next/link';
 
 /**
  *
@@ -22,7 +23,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		<div className={`container ${theme}`}>
 			<header className="header">
-				<h3>José Thomaz</h3>
+				<Link href="/">
+					<h3>José Thomaz</h3>
+				</Link>
 				<div>
 					<Icon
 						icon={theme === 'dark' ? 'bi:moon-stars-fill' : 'bi:sun-fill'}
@@ -33,6 +36,17 @@ function MyApp({ Component, pageProps }: AppProps) {
 				</div>
 			</header>
 			<Component {...pageProps} />
+			<footer className="footer">
+				<p>
+					{new Date().getFullYear()} - {''}
+				</p>
+				<div className="footerIcons">
+					<Icon icon="academicons:stackoverflow" fontSize={25} />
+					<Icon icon="ant-design:github-filled" fontSize={25} />
+					<Icon icon="ant-design:twitter-outlined" fontSize={25} />
+					<Icon icon="ant-design:linkedin-filled" fontSize={25} />
+				</div>
+			</footer>
 		</div>
 	);
 }

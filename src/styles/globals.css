@@ -32,8 +32,8 @@ button, input {
 }
 
 .light {
-	background-color: #ccc;
-	color: rgb(12, 12, 12);
+	background-color: rgb(222, 220, 220);
+	color: rgb(34, 32, 32);
 }
 
 header.header {
@@ -46,9 +46,32 @@ header.header {
 }
 
 header.header > h3 {
+	cursor: pointer;
 	text-transform: uppercase;
 	font-weight: 700;
 	font-style: italic;
+}
+
+footer.footer {
+  display: flex;
+  flex: 1;
+  padding: 2rem 0;
+  border-top: 3px solid #373636;
+  justify-content: center;
+  align-items: center;
+}
+
+.footerIcons {
+  height: 1em;
+  margin-left: 0.5rem;
+}
+
+.footerIcons > svg {
+	margin-right: 0.5rem;
+}
+
+.footerIcons > svg:last-child {
+	margin-right: 0;
 }
 
 .switchThemeIcon {

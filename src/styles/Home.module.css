@@ -8,15 +8,6 @@
   align-items: center;
 }
 
-footer.footer {
-  display: flex;
-  flex: 1;
-  padding: 2rem 0;
-  border-top: 3px solid #373636;
-  justify-content: center;
-  align-items: center;
-}
-
 .title a {
   color: #0070f3;
   text-decoration: none;

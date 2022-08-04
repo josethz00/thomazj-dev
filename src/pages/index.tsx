@@ -69,18 +69,6 @@ const Home: NextPage = (): JSX.Element => {
 					</Link>
 				</div>
 			</main>
-
-			<footer className={styles.footer}>
-				<p>
-					{new Date().getFullYear()} - {''}
-				</p>
-				<div className={styles.footerIcons}>
-					<Icon icon="academicons:stackoverflow" fontSize={25} />
-					<Icon icon="ant-design:github-filled" fontSize={25} />
-					<Icon icon="ant-design:twitter-outlined" fontSize={25} />
-					<Icon icon="ant-design:linkedin-filled" fontSize={25} />
-				</div>
-			</footer>
 		</>
 	);
 };

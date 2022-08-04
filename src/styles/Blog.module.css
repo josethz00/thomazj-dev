@@ -1,0 +1,52 @@
+main.mainContainer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+main > div.blogCardSection {
+	margin: 20px 0px;
+}
+
+main .blogCard {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	max-width: 800px;
+	padding: 0 20px;
+	margin-bottom: 42px;
+	transition: ease-in-out .25s;
+	cursor: pointer;
+}
+
+main .blogCard:hover {
+	box-shadow: 0px 0px 10px rgba(38, 37, 37, 0.2);
+	filter: brightness(160%);
+}
+
+main .blogCard > img {
+	width: 170px;
+	height: 170px;
+	border-radius: 4px;
+	object-fit: cover;
+	margin-right: 20px;
+}
+
+main .blogCard > div > span {
+	text-transform: uppercase;
+	font-weight: 700;
+	font-size: 14px;
+}
+
+main.mainContainer > div > p {
+	font-size: 16px;
+	line-height: 1.5;
+	font-weight: 300;
+	margin-bottom: 20px;
+	padding: 0 20px;
+}
+
+.seeMoreBlogposts {
+	cursor: pointer;
+}
