@@ -1,6 +1,3 @@
-node_modules
-dist
-coverage
-./data
-requirements
-.vscode
+**/node_modules/*
+**/out/*
+**/.next/*
