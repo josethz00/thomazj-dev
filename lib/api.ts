@@ -43,3 +43,8 @@ export function getAllPosts(fields: string[] = []): PostItems[] {
     .sort((post1, post2) => (post1.date > post2.date ? -1 : 1));
   return posts;
 }
+
+export function getPostsByTag(tag: string, fields: string[] = []): PostItems[] {
+  const posts = getAllPosts(fields);
+  return posts.filter((post) => post.tags.includes(tag));
+}
