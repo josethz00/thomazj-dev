@@ -6,6 +6,7 @@ import { MDXRemoteSerializeResult } from 'next-mdx-remote';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import path from 'path';
 import Layout from '../../components/Layout';
 import { getPostsByTag } from '../../lib/api';
@@ -17,8 +18,14 @@ type TagPageProps = {
 };
 
 const TagPage = ({ posts }: TagPageProps): JSX.Element => {
+  const router = useRouter();
+
   return (
     <Layout>
+      <h1>
+        <span className="text-2xl font-bold text-gray-900 dark:text-white">Posts tagged with </span>
+        <span className="text-2xl font-bold text-blue-400 dark:text-blue-400">#{router.query.tag}</span>
+      </h1>
       {posts.map((post) => (
         <article key={post.slug} className="mt-12 rounded-md bg-black/5 dark:bg-white/5 p-4 hover:bg-[#f5f5f5] dark:hover:bg-[#1a1a1a]">
           <p className="mb-1 text-sm text-gray-500 dark:text-gray-400">
