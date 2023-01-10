@@ -16,11 +16,21 @@ export const Index = ({ posts }: IndexProps): JSX.Element => {
       <h1>Home Page</h1>
       <p>Welcome to my blog! Here I write about my studies and thoughts:</p>
       <ul className="list-disc pl-4 my-6">
-        <li>Software Engineering</li>
-        <li className="mt-2">Computer Science</li>
-        <li className="mt-2">Economics</li>
-        <li className="mt-2">Philosophy</li>
-        <li className="mt-2">Databases</li>
+        <Link href="/tags/softwareengineering">
+          <li className='hover:text-blue-600 dark:hover:text-blue-600 cursor-pointer transition-colors duration-300 ease-in-out'>Software Engineering</li>
+        </Link>
+        <Link href="/tags/computerscience">
+          <li className="hover:text-blue-600 dark:hover:text-blue-600 cursor-pointer transition-colors duration-300 ease-in-out mt-2">Computer Science</li>
+        </Link>
+        <Link href="/tags/economics">
+          <li className="hover:text-blue-600 dark:hover:text-blue-600 cursor-pointer transition-colors duration-300 ease-in-out mt-2">Economics</li>
+        </Link>
+        <Link href="/tags/philosophy">
+          <li className="hover:text-blue-600 dark:hover:text-blue-600 cursor-pointer transition-colors duration-300 ease-in-out mt-2">Philosophy</li>
+        </Link>
+        <Link href="/tags/databases">
+          <li className="hover:text-blue-600 dark:hover:text-blue-600 cursor-pointer transition-colors duration-300 ease-in-out mt-2">Databases</li>
+        </Link>
       </ul>
 
       {posts.map((post) => (
