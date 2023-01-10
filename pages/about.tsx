@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '../components/Layout';
 import { FiTwitter, FiLinkedin, FiGithub } from 'react-icons/fi';
+import { FaDev } from 'react-icons/fa';
 
 export const About = (): JSX.Element => {
   return (
@@ -33,8 +34,11 @@ export const About = (): JSX.Element => {
         <a href='https://www.linkedin.com/in/jose-thomaz' className='mr-4' target='_blank' rel="noreferrer">
           <FiLinkedin size={26} />
         </a>
-        <a href='https://github.com/josethz00' target='_blank' rel="noreferrer">
+        <a href='https://github.com/josethz00' className='mr-4' target='_blank' rel="noreferrer">
           <FiGithub size={26} />
+        </a>
+        <a href='https://dev.to/josethz00' target='_blank' rel="noreferrer">
+          <FaDev size={26} />
         </a>
       </div>
     </Layout>
