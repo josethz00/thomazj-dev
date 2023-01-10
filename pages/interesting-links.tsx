@@ -49,6 +49,12 @@ const linksArray = [
     description: "In this video, I will explain what happens when you type google.com into your browser and press Enter.",
     url: "https://youtu.be/dh406O2v_1c",
     dateAdded: new Date("2022-10-01").getTime(),
+  },
+  {
+    title: "MDTV Achievements Matrix",
+    description: "A matrix of achievements for MDTV, a way to measure you progress as a software developer",
+    url: 'https://docs.google.com/spreadsheets/d/18O_ypMhQoGTf2uQz1-eNUKIBxnH6a1BZBf_-W1sxI5Q/edit#gid=1843717713',
+    dateAdded: new Date('2022-10-02').getTime(),
   }
 ];
 
