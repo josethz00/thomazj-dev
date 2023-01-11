@@ -1,0 +1,70 @@
+---
+title: You don't need Kafka! Use Postgres for message-queues
+description: You can use PostgreSQL (yes, the database) as a message queue, and without any external libraries and plug-ins. Also, you probably don't need Apache Kafka MMT is a very recent theory, and already divides economists and students.
+date: '2022-01-11'
+tags: ['database', 'tutorial', 'programming', 'postgres']
+---
+
+No, it's not a click bait, you can use PostgreSQL (yes, the database) as a message queue, and without any external libraries and plug-ins. Also, you probably don't need Apache Kafka. In this article, I will explain why you probably don't need Kafka and how to use Postgres as a message-queue.
+
+&nbsp;
+
+## About Apache Kafka
+
+Apache Kafka is an open-source distributed event streaming platform used by thousands of companies for high-performance data pipelines, streaming analytics, data integration, and mission-critical applications.
+Apache Kafka is very used for asynchronous communication between microservices. It can handle **up to 2 million messages PER SECOND** and has a well-structured broker scheme, with topic partitions and data persistence in the disk.
+
+&nbsp;
+
+## To think 🤔
+
+Do your company really need a robust message broker, that is capable to handle 2 million messages per second? Probably not, unless you work for a giant that has a huge number of active users.
+Digital Ocean had used MySQL as a message-queue for many years, because this was enough and enabled them to save money and resources. Now, they use RabbitMQ, because they grew too much in the last few years and MySQL wasn't being able to handle the request anymore. You can do as Digital Ocean did, start small and refactor the system when needed.
+Imagine you are the CTO of an early-stage startup, but that is fastly growing. You have just decided to use a message-queue to help your system to handle the increasing number of requests.
+
+![Early-stage startup system](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/gbhqf8hznx2j27klnxip.png)
+
+&nbsp;
+
+## When to use Apache Kafka?
+
+Apache Kafka is an amazing tool, but you have to know where to use it, to not spend too much money with something you might not need. So, some use cases for Kafka usage, are:
+
+- Real-time data processing
+- Messaging between big (really big) microservices that have a high throughput and are considered "mission critical" 
+- Log Aggregation
+- Tracking user activities across a distributed systems network
+
+If your system works with little data and hasn't requirements like the ones above, using Kafka will be overkill. In this cases you can use RabbitMQ, but RabbitMQ may also be too much, well, you can use Redis then! But Redis may also bee too much. What about using Postgres as your message-queue system?
+
+&nbsp;
+
+## What is a message-queue?
+
+A message queue is a software engineering component used for communication between processes or between threads within the same process. Message queues provide an asynchronous communication protocol in which the sender and receiver of messages don't need to interact at the same time - messages are held in queue until the recipient retrieves them
+
+## Postgres as a message-queue
+
+As mentioned earlier, relational databases, including PostgreSQL, are used by many companies as a message-queue or pub-sub. But, why? What are the benefits?
+
+- Easy to setup
+- Can handle a large number of concurrent connections
+- Cheaper
+- Doesn't introduce more complexity, because you will be using the same technology for data storage and message-queuing
+
+TLDR; [Just use postgres for everything](https://www.amazingcto.com/postgres-for-everything/)
+
+## Implementation
+
+
+
+### Using LISTEN/NOTIFY
+
+This is our implementation, but the Postgres' LISTEN and NOTIFY functions aren't persistent, they are more like a pub/sub mechanism. Pub/sub means that if nobody is subscribed listening, the events emmited in this time interval were lost. So, in this case, if you need persistent data, maybe it is not the best option, but hold still! Let's see a better approach for this case.
+
+### Making it persistent
+
+## Sources
+
+- [Article describing how Digital Ocean used MySQL as a message-queue](https://www.digitalocean.com/blog/from-15-000-database-connections-to-under-100-digitaloceans-tale-of-tech-debt)
+- [Article about Kafka use cases](https://www.upsolver.com/blog/apache-kafka-use-cases-when-to-use-not)
