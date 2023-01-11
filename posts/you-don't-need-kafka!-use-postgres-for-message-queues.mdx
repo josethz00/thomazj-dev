@@ -2,7 +2,7 @@
 title: You don't need Kafka! Use Postgres for message-queues
 description: You can use PostgreSQL (yes, the database) as a message queue, and without any external libraries and plug-ins. Also, you probably don't need Apache Kafka MMT is a very recent theory, and already divides economists and students.
 date: '2022-01-11'
-tags: ['database', 'tutorial', 'programming', 'postgres']
+tags: ['databases', 'tutorial', 'programming', 'postgres']
 ---
 
 No, it's not a click bait, you can use PostgreSQL (yes, the database) as a message queue, and without any external libraries and plug-ins. Also, you probably don't need Apache Kafka. In this article, I will explain why you probably don't need Kafka and how to use Postgres as a message-queue.
@@ -56,11 +56,382 @@ TLDR; [Just use postgres for everything](https://www.amazingcto.com/postgres-for
 
 ## Implementation
 
+Now, let's go right to the point. How to implement a message-queue using Postgres? There are three ways to do this, 
+using LISTEN/NOTIFY, using a table and combining LISTEN/NOTIFY with a table. For this implementation we are going to use the
+following technologies:
 
+- Node.js
+- Typescript
+- Postgres
+- pg (Postgres native driver for Node.js)
 
-### Using LISTEN/NOTIFY
+*OBS.: Don't worry, we are going to use the minimum amount of programming language possible to explain the concepts, the focus is on the database and SQL, not on the programming language.*
 
-This is our implementation, but the Postgres' LISTEN and NOTIFY functions aren't persistent, they are more like a pub/sub mechanism. Pub/sub means that if nobody is subscribed listening, the events emmited in this time interval were lost. So, in this case, if you need persistent data, maybe it is not the best option, but hold still! Let's see a better approach for this case.
+### Setup the project
+
+1. Enter in the project folder and then type in your terminal:
+
+```bash
+touch docker-compose.yml
+```
+
+2. Open the file and paste the following code:
+
+```yaml:docker-compose.yml
+version: '3'
+
+services:
+  db:
+    image: postgres:13
+    restart: always
+    container_name: postgres-mq
+    ports:
+      - '5439:5432'
+    environment:
+      POSTGRES_USER: postgres-mq
+      POSTGRES_PASSWORD: postgres-mq
+      POSTGRES_DB: postgres-mq
+networks:
+  user-network:
+    driver: bridge
+  proxynet:
+    name: custom_network
+```
+
+3. Now, run the following command:
+
+```bash
+touch .dockerignore && echo "node_modules" >> .dockerignore # set the .dockerignore file
+```
+
+4. Initialize a JavaScript project:
+
+```bash
+yarn init -y # you can use npm or pnpm as well = )
+```
+
+5. Open the `package.json` file and override it with the following content:
+
+```json:package.json
+{
+  "name": "postgres-mq",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "start:dev": "tsnd -r tsconfig-paths/register --exit-child --transpile-only --ignore-watch node_modules src/main.ts",
+    "example:pubsub": "tsnd -r tsconfig-paths/register --exit-child --transpile-only --ignore-watch node_modules src/pubsub-test.ts",
+    "example:mq": "tsnd -r tsconfig-paths/register --exit-child --transpile-only --ignore-watch node_modules src/mq-test.ts"
+  },
+  "dependencies": {
+    "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.6.5",
+    "@faker-js/faker": "^7.5.0",
+    "@types/node": "^18.7.3",
+    "@types/validator": "^13.7.8",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "dotenv": "^16.0.3",
+    "eslint": "^8.0.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-prettier": "^4.2.1",
+    "jest": "28.0.3",
+    "prettier": "^2.3.2",
+    "ts-jest": "28.0.1",
+    "ts-node": "^10.0.0",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.0.0",
+    "typescript": "^4.8.4"
+  }
+}
+```
+
+6. Install the dependencies:
+
+```bash
+yarn install
+```
+
+7. Create a typescript configuration file:
+
+```bash
+touch tsconfig.json
+```
+
+8. Open the `tsconfig.json` file and add some default configurations:
+
+```json:tsconfig.json
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "commonjs",
+    "target": "es2019",
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "allowJs": true,
+    "sourceMap": true,
+    "rootDirs": ["./src", "tests"],
+    "baseUrl": "./",
+    "paths": {
+      "@/tests/*": ["./tests/*"],
+      "@/*": ["./src/*"]
+    },
+  },
+  "include": ["src", "tests", "@types"],
+  "exclude": ["node_modules"]
+}
+```
+9. Create the `src` folder and then create the `main.ts` file:
+
+```bash
+mkdir src && touch src/main.ts
+```
+
+Now we are ready to start the project!
+
+### Using LISTEN/NOTIFY (pub/sub)
+
+LISTEN and NOTIFY are Postgres' functions that allow us to listen to events and notify them. It is a pub/sub mechanism inside the database. Let's see how it works in the
+diagram below:
+
+![Postgres message-queue architecture diagram](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/zizc01cix38ops1jbifr.png)
+
+The diagram above is a very simplified representation of a payment analysis system. The system has a payment service that receives payments and then sends them to the
+analysis service. The analysis service is responsible for analyzing the payments and then sending the result to the payments notification service. The process of analyzing
+a payment may take a long time to be completed, so the notification service needs to know when the payment analysis was completed. The notification service is responsible for
+sending the payment analysis result to the user.
+
+To make this process work, we need to stablish a communication between the services, and this is where the LISTEN and NOTIFY functions come in. The payment service will send
+the payment to the analysis service, and then the analysis service will notify the notification service that the payment was analyzed. <b>So, summing up, the notification service
+will LISTEN to the analysis service and the analysis service will NOTIFY the notification service.</b>
+
+<h4>Code</h4>
+
+In our `main.ts`, let's create a function to connect with the database:
+
+```typescript:main.ts
+import { Client, Notification } from 'pg';
+import { SqlQueries } from './sql-queries';
+
+interface IinitPostgresMQ {
+  user: string;
+  host: string;
+  database: string;
+  password: string;
+  port: number;
+  type?: 'message-queue' | 'pub-sub';
+}
+
+/**
+ * Start the application.
+ */
+const initPostgresMQ = ({
+  user,
+  host,
+  database,
+  password,
+  port,
+  type,
+}: IinitPostgresMQ) => {
+  const dbClient = new Client({
+    user,
+    host,
+    database,
+    password,
+    port,
+  });
+
+  dbClient.connect((err) => {
+    if (err) {
+      console.log('Error connecting to database', err);
+    } else {
+      console.log('Connected to database');
+    }
+  });
+
+  if (type === 'message-queue') {
+    dbClient.query(
+      `
+      ${SqlQueries.CREATE_MESSAGE_QUEUE_TABLE()}
+      ${SqlQueries.CREATE_MESSAGE_TABLE()}
+      `,
+    );
+  }
+
+  return dbClient;
+};
+```
+
+The `initPostgresMQ` function receives the database connection data and returns a `Client` instance. The `Client` instance is the connection with the database. Our queries
+will be stored in a separated file called `sql-queries.ts`. Let's create it:
+
+```bash
+touch src/sql-queries.ts
+```
+
+And fill it with some useful queries
+
+```typescript:sql-queries.ts
+export class SqlQueries {
+  public static readonly LISTEN = (queueName: string): string =>
+    `LISTEN ${queueName};`;
+  public static readonly NOTIFY = (
+    queueName: string,
+    message: Record<string, unknown>,
+  ): string => `NOTIFY ${queueName}, '${JSON.stringify(message)}';`;
+  public static readonly CREATE_MESSAGE_QUEUE_TABLE = (): string =>
+    `CREATE TABLE IF NOT EXISTS message_queue (
+      id SERIAL PRIMARY KEY,
+      queue_name VARCHAR(255) NOT NULL UNIQUE,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW()
+    );`;
+  public static readonly CREATE_MESSAGE_TABLE = (): string =>
+    `CREATE TABLE IF NOT EXISTS message(
+      id SERIAL PRIMARY KEY,
+      msg JSONB NOT NULL,
+      delay INTEGER NOT NULL DEFAULT 0,
+      retry INTEGER NOT NULL DEFAULT 0,
+      consumed BOOLEAN NOT NULL DEFAULT FALSE,
+      queue_id INTEGER NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      FOREIGN KEY (queue_id) REFERENCES message_queue(id)
+    );`;
+  public static readonly CREATE_MESSAGE_QUEUE = (): string =>
+    `INSERT INTO message_queue (queue_name) VALUES ($1) ON CONFLICT DO NOTHING;`;
+  public static readonly CREATE_MESSAGE =
+    (): string => `INSERT INTO message (msg, delay, retry, queue_id) VALUES ($1, $2, $3,
+    (SELECT id FROM message_queue WHERE queue_name = $4));`;
+  public static readonly GET_QUEUE_UNCONSUMED_MESSAGES = (): string =>
+    `SELECT m.id, m.msg, m.delay, m.retry, m.consumed, m.created_at, q.queue_name
+        FROM message m INNER JOIN message_queue q ON m.queue_id = q.id
+        WHERE q.queue_name = $1 AND m.consumed = FALSE
+        FOR UPDATE SKIP LOCKED;`;
+  public static readonly UPDATE_MESSAGE_CONSUMED_STATUS = (
+    consumed: boolean,
+  ): string => `UPDATE message SET consumed = ${consumed} WHERE id = $1;`;
+}
+```
+
+Now, back to `main.ts`, we need to create the functions to listen and notify the events in the database, so let's create a class for this:
+
+```typescript:main.ts
+[...] // previous code
+
+export default class PostgresMQ {
+  private dbClient: Client;
+  /**
+   * Start the application via the constructor.
+   */
+  constructor({
+    user,
+    database,
+    host,
+    password,
+    port,
+    type = 'pub-sub',
+  }: IinitPostgresMQ) {
+    this.dbClient = initPostgresMQ({
+      user,
+      database,
+      host,
+      password,
+      port,
+      type,
+    });
+  }
+
+  /**
+   * Subscribe to a channel.
+   * @param queueName - The name of the queue to listen to.
+   */
+  public subscribeTo(queueName: string, action: (...args: any) => void): void {
+    console.log('Subscribing to queue', ` "${queueName}" `);
+    this.dbClient.query(SqlQueries.LISTEN(queueName));
+
+    this.dbClient.on('notification', (msg: Notification) => {
+      action(msg);
+    });
+  }
+
+  /**
+   * Add a message to a queue.
+   * @param param0 - the queue name and the message to send.
+   */
+  public publishMessage({
+    queueName,
+    message,
+  }: {
+    queueName: string;
+    message: Record<string, unknown>;
+  }): void {
+    console.log('Adding message to queue', ` "${queueName}" `);
+    this.dbClient.query(SqlQueries.NOTIFY(queueName, message));
+  }
+}
+```
+
+Now, let's see this code in action. Create a file called `pubsub-test.ts`:
+
+```bash
+touch src/pubsub-test.ts
+```
+
+And add the following code:
+
+```typescript:pubsub-test.ts
+import { Notification } from 'pg';
+import PostgresMQ from './main';
+
+const myQueue = new PostgresMQ({
+  user: 'postgres-mq',
+  database: 'postgres-mq',
+  host: 'localhost',
+  password: 'postgres-mq',
+  port: 5439,
+});
+
+/**
+ *
+ * @param _
+ */
+function sayHi(_: string) {
+  console.log(`Hi, ${_} !`);
+}
+
+myQueue.subscribeTo('my_test_queue', (msg: Notification) => {
+  console.log('Message received', {
+    channel: msg.channel,
+    payload: msg.payload ? JSON.parse(msg.payload) : '<empty-value>',
+  });
+  sayHi(msg.channel);
+});
+
+setInterval(() => {
+  myQueue.publishMessage({
+    queueName: 'my_test_queue',
+    message: {
+      foo: 'bar',
+      it: 'works',
+    },
+  });
+}, 5000);
+```
+
+This code will create a queue called `my_test_queue` and will send a message to this queue every 5 seconds. Let's run it:
+
+```bash
+yarn example:pubsub
+```
+
+Our pub/sub implementation is done, but the Postgres' LISTEN and NOTIFY functions aren't persistent, they are more like a pub/sub mechanism. Pub/sub means that if nobody is subscribed listening, the events emmited in this time interval were lost. So, in this case, if you need persistent data, maybe it is not the best option, but hold still! Let's see a better approach for this case.
 
 ### Making it persistent
 
