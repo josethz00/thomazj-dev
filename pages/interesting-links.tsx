@@ -117,6 +117,12 @@ const linksArray = [
     description: "A matrix of achievements for MDTV, a way to measure you progress as a software developer",
     url: 'https://docs.google.com/spreadsheets/d/18O_ypMhQoGTf2uQz1-eNUKIBxnH6a1BZBf_-W1sxI5Q/edit#gid=1843717713',
     dateAdded: new Date('2022-10-02').getTime(),
+  },
+  {
+    title: "Human Search Engine",
+    description: "Remember everything you read with the Human Search Engine, a method to take notes in the form of questions and answers.",
+    url: 'https://sibelius.substack.com/p/human-search-engine',
+    dateAdded: new Date('2022-12-02').getTime(),
   }
 ];
 
