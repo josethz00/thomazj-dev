@@ -435,6 +435,9 @@ Our pub/sub implementation is done, but the Postgres' LISTEN and NOTIFY function
 
 ### Making it persistent
 
+Message-queues like RabbitMQ, Kafka, and others, are persistent, so if you send a message to a queue and nobody is listening, the message will be stored in the queue until someone consumes it. 
+So far, our implementation is just a pub/sub model, let's make our PostgresMQ persistent to be a true message-queue in a producer/consumer model.
+
 ## Sources
 
 - [Article describing how Digital Ocean used MySQL as a message-queue](https://www.digitalocean.com/blog/from-15-000-database-connections-to-under-100-digitaloceans-tale-of-tech-debt)
