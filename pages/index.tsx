@@ -31,6 +31,9 @@ export const Index = ({ posts }: IndexProps): JSX.Element => {
         <Link href="/tags/databases">
           <li className="hover:text-blue-600 dark:hover:text-blue-600 cursor-pointer transition-colors duration-300 ease-in-out mt-2">Databases</li>
         </Link>
+        <Link href="/tags/blockchain">
+          <li className="hover:text-blue-600 dark:hover:text-blue-600 cursor-pointer transition-colors duration-300 ease-in-out mt-2">Blockchain</li>
+        </Link>
       </ul>
 
       {posts.map((post) => (
