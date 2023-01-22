@@ -2,7 +2,9 @@ import { FormEvent, useRef, useState } from "react";
 import Layout from "../components/Layout";
 
 const InterestingLinks = (): JSX.Element => {
-  const [filteredLinks, setFilteredLinks] = useState(linksArray);
+  const [filteredLinks, setFilteredLinks] = useState(linksArray.sort((a, b) => {
+    return a.dateAdded < b.dateAdded ? 1 : -1;
+  }));
   const [links] = useState(linksArray);
 
   const searchValueRef = useRef(null);
@@ -98,37 +100,37 @@ const linksArray = [
     title: "How to be antifragile for developers",
     description: "Antifragility is a concept that was introduced by Nassim Nicholas Taleb in his book Antifragile: Things That Gain from Disorder. It is the opposite of fragility, which is the tendency to break or collapse under the slightest stress. Antifragile things, on the other hand, benefit from stress and disorder.",
     url: "https://emanuelferreira.substack.com/p/how-to-be-antifragile-for-developers",
-    dateAdded: new Date("2022-10-01").getTime(),
+    dateAdded: new Date("2023-10-01").getTime(),
   },
   {
     title: "E2E Type Safety with GraphQL and React",
     description: "In this post, we will explore how to use GraphQL and TypeScript to create a type-safe end-to-end experience for your React application.",
     url: "https://www.prisma.io/blog/e2e-type-safety-graphql-react-3-fbV2ZVIGWg",
-    dateAdded: new Date("2022-10-01").getTime(),
+    dateAdded: new Date("2023-10-01").getTime(),
   },
   {
     title: "What happens when you type google.com into your browser and press Enter?",
     description: "In this video, I will explain what happens when you type google.com into your browser and press Enter.",
     url: "https://youtu.be/dh406O2v_1c",
-    dateAdded: new Date("2022-10-01").getTime(),
+    dateAdded: new Date("2023-10-01").getTime(),
   },
   {
     title: "MDTV Achievements Matrix",
     description: "A matrix of achievements for MDTV, a way to measure you progress as a software developer",
     url: 'https://docs.google.com/spreadsheets/d/18O_ypMhQoGTf2uQz1-eNUKIBxnH6a1BZBf_-W1sxI5Q/edit#gid=1843717713',
-    dateAdded: new Date('2022-10-02').getTime(),
+    dateAdded: new Date('2023-10-01').getTime(),
   },
   {
     title: "Human Search Engine",
     description: "Remember everything you read with the Human Search Engine, a method to take notes in the form of questions and answers.",
     url: 'https://sibelius.substack.com/p/human-search-engine',
-    dateAdded: new Date('2022-12-02').getTime(),
+    dateAdded: new Date('2023-12-01').getTime(),
   },
   {
     title: "EdgeDB",
     description: "EdgeDB is a graph-relational database with a modern and simple query language. EdgeDB compiles queries to PGSQL.",
     url: 'https://edgedb.com/',
-    dateAdded: new Date('2022-22-02').getTime(),
+    dateAdded: new Date('2023-22-01').getTime(),
   }
 ];
 
