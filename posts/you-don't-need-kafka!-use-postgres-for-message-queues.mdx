@@ -438,6 +438,29 @@ Our pub/sub implementation is done, but the Postgres' LISTEN and NOTIFY function
 Message-queues like RabbitMQ, Kafka, and others, are persistent, so if you send a message to a queue and nobody is listening, the message will be stored in the queue until someone consumes it. 
 So far, our implementation is just a pub/sub model, let's make our PostgresMQ persistent to be a true message-queue in a producer/consumer model.
 
+You probably noticed that at the beginning of this article, we created a table called `message` and another called `message_queue`, but we didn't use them yet. Let's use them now. These tables will be used to store a queue's messages and the created queues, respectively.
+
+Message-queues are different from pub/sub because they follow a producer/consumer model, but what is a producer and what is a consumer? A producer is a service that sends messages to a queue, and a consumer is a service that consumes messages from a queue.
+In a producer/consumer model, we have two possible approaches:
+
+- PULL-BASED: the consumer pulls messages from the queue.
+- PUSH-BASED: the queue pushes (notifies) messages to the consumer.
+
+In this article, we will use the PULL-BASED approach, but you can use the PUSH-BASED approach if you want.
+
+## To improve
+
+- Add a TTL to the messages.
+- Add a TTL to the queues.
+- Our producer/consumer model is PULL-BASED, but you can use the PUSH-BASED approach if you want.
+- Our producer/consumer model is not broadcasting to multiple consumers, currently only one consumer can consume a message.
+- Add a way to delete a queue.
+- Add a way to delete a message.
+
+## Link to the code
+
+- [PostgresMQ](https://github.com/josethz00/postgres-mq)
+
 ## Sources
 
 - [Article describing how Digital Ocean used MySQL as a message-queue](https://www.digitalocean.com/blog/from-15-000-database-connections-to-under-100-digitaloceans-tale-of-tech-debt)
