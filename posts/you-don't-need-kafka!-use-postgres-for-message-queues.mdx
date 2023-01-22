@@ -448,7 +448,156 @@ In a producer/consumer model, we have two possible approaches:
 
 In this article, we will use the PULL-BASED approach, but you can use the PUSH-BASED approach if you want.
 
+First, we need to adapt our PostgresMQ class to use the `message` and `message_queue` tables. To do it, let's create two new methods in our class:
+
+```typescript:main.ts
+[...] // previous code
+class PostgresMQ {
+  [...] // existent code
+
+  /**
+   * Add a message to a queue.
+   * @param param0 - the queue name and the message to send.
+   * @param param1 - the number of seconds to wait before consuming the message.
+   * @param param2 - the number of times to retry consuming the message.
+   * @param param3 - the number of seconds to wait before retrying to consume the message.
+   */
+  public async produceMessage({
+    queueName,
+    message,
+    delay = 0,
+    retry = 0,
+  }: {
+    queueName: string;
+    message: Record<string, unknown>;
+    delay?: number;
+    retry?: number;
+  }): Promise<void> {
+    await this.dbClient.query(SqlQueries.CREATE_MESSAGE_QUEUE(), [queueName]);
+    await this.dbClient.query(SqlQueries.CREATE_MESSAGE(), [
+      message,
+      delay,
+      retry,
+      queueName,
+    ]);
+    this.publishMessage({ queueName, message });
+  }
+
+  /**
+   * Consume a message from a queue.
+   * @param queueName - the name of the queue to consume from.
+   */
+  public async consumeMessage(
+    queueName: string,
+    action: (...args: any) => void,
+  ): Promise<void> {
+    this.subscribeTo(queueName, async (msg: Notification) => {
+      console.log('Message received', {
+        channel: msg.channel,
+        payload: msg.payload ? JSON.parse(msg.payload) : '<empty-value>',
+      });
+
+      const rows = await this.dbClient.query(
+        SqlQueries.GET_QUEUE_UNCONSUMED_MESSAGES(),
+        [queueName],
+      );
+
+      if (rows.rowCount > 0) {
+        rows.rows.forEach(async (row) => {
+          const { id, msg, delay, created_at } = row;
+          if (delay > 0) {
+            setTimeout(() => {
+              action({
+                id,
+                created_at,
+                ...msg,
+              });
+            }, delay * 1000);
+
+            await this.dbClient.query(
+              SqlQueries.UPDATE_MESSAGE_CONSUMED_STATUS(true),
+              [id],
+            );
+
+            return;
+          }
+          action({
+            id,
+            created_at,
+            ...msg,
+          });
+
+          /* essa linha deve mesmo ser atualizada? os consumers que perderem a
+          mensagem não vão conseguir consumir novamente? */
+          await this.dbClient.query(
+            SqlQueries.UPDATE_MESSAGE_CONSUMED_STATUS(true),
+            [id],
+          );
+        });
+      }
+    });
+  }
+}
+
+[...] // rest of the code
+```
+
+In the code above, we have created two methods: `produceMessage` and `consumeMessage`, that will be used to produce and consume messages, respectively. The `produceMessage` method will add a message to the `message` table and will publish the message to the queue. The `consumeMessage` method will consume a message from the `message` table and will execute the `action` function passed as a parameter.
+
+Now, let's see our message-queue in action. Create a file called `mq-test.ts`:
+
+```bash
+touch src/mq-test.ts
+```
+
+And add the following code:
+
+```typescript:pubsub-test.ts
+import PostgresMQ from './main';
+
+const myQueue = new PostgresMQ({
+  user: 'postgres-mq',
+  database: 'postgres-mq',
+  host: 'localhost',
+  password: 'postgres-mq',
+  port: 5439,
+  type: 'message-queue',
+});
+
+/**
+ *
+ * @param _
+ */
+function sayHi(_: unknown) {
+  console.log(`Hi, ${JSON.stringify(_)} !`);
+}
+
+setInterval(() => {
+  myQueue.produceMessage({
+    queueName: 'my_test_queue',
+    message: {
+      foo: 'bar',
+      it: 'works',
+    },
+  });
+}, 5000);
+
+myQueue.consumeMessage('my_test_queue', sayHi);
+```
+
+In the code above, we are creating a new instance of our `PostgresMQ` class and we are calling the `produceMessage` method every 5 seconds. The `produceMessage` method will add a message to the `message` table and will publish the message to the `my_test_queue` queue. The `consumeMessage` method will consume a message from the `message` table and will execute the `sayHi` function passed as a parameter.
+
+Now, let's run our code:
+
+```bash
+yarn example:mq
+```
+
+This was our Postgres message-queue implementation combining the `LISTEN` and `NOTIFY` commands with the `message` and `message_queue` tables. We have created a simple producer/consumer model that can be used to send and receive messages.
+
 ## To improve
+
+Congratulations, you have reached the end of this article and created a simple message-queue using Postgres. There are still some improvements that can be made to this implementation:
 
 - Add a TTL to the messages.
 - Add a TTL to the queues.
