@@ -123,6 +123,12 @@ const linksArray = [
     description: "Remember everything you read with the Human Search Engine, a method to take notes in the form of questions and answers.",
     url: 'https://sibelius.substack.com/p/human-search-engine',
     dateAdded: new Date('2022-12-02').getTime(),
+  },
+  {
+    title: "EdgeDB",
+    description: "EdgeDB is a graph-relational database with a modern and simple query language. EdgeDB compiles queries to PGSQL.",
+    url: 'https://edgedb.com/',
+    dateAdded: new Date('2022-22-02').getTime(),
   }
 ];
 
