@@ -137,6 +137,12 @@ const linksArray = [
     description: "Stop using JWT for sessions, JWT tokens are bad for sessions and they are not as secure as they seem to be",
     url: "http://cryto.net/~joepie91/blog/2016/06/13/stop-using-jwt-for-sessions/",
     dateAdded: new Date('2023-30-01').getTime()
+  },
+  {
+    title: "JWTs are dangerous for sessions, use sessions with Redis",
+    description: "Exchange JWTs in local storage for sessions stored in Redis",
+    url: "https://redis.com/blog/json-web-tokens-jwt-are-dangerous-for-user-sessions/",
+    dateAdded: new Date('2023-30-01').getTime()
   }
 ];
 
