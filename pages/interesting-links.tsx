@@ -131,6 +131,12 @@ const linksArray = [
     description: "EdgeDB is a graph-relational database with a modern and simple query language. EdgeDB compiles queries to PGSQL.",
     url: 'https://edgedb.com/',
     dateAdded: new Date('2023-22-01').getTime(),
+  },
+  {
+    title: "Stop using JWT for sessions",
+    description: "Stop using JWT for sessions, JWT tokens are bad for sessions and they are not as secure as they seem to be",
+    url: "http://cryto.net/~joepie91/blog/2016/06/13/stop-using-jwt-for-sessions/",
+    dateAdded: new Date('2023-30-01').getTime()
   }
 ];
 
