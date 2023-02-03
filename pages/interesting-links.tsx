@@ -143,6 +143,18 @@ const linksArray = [
     description: "Exchange JWTs in local storage for sessions stored in Redis",
     url: "https://redis.com/blog/json-web-tokens-jwt-are-dangerous-for-user-sessions/",
     dateAdded: new Date('2023-30-01').getTime()
+  },
+  {
+    title: "How to Calculate Entropy for a Data Set?",
+    description: "Entropy is a measure of the uncertainty of a random variable. What if we could measure the entropy of a data set?",
+    url: "https://www.youtube.com/watch?v=Ay8IU8eRZAk",
+    dateAdded: new Date('2023-03-02').getTime()
+  },
+  {
+    title: "Cyclomatic Complexity",
+    description: "Cyclomatic complexity is a software metric used to indicate the complexity of a program.",
+    url: "https://en.wikipedia.org/wiki/Cyclomatic_complexity",
+    dateAdded: new Date('2023-03-02').getTime()
   }
 ];
 
