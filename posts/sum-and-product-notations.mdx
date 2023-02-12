@@ -7,6 +7,95 @@ tags: ['math', 'computerscience', 'tutorial']
 
 You probably already saw the following notation:
 
-$$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$$
+$$
+\sum_{i=1}^{n} i(i+1)
+$$
 
-&nbsp;
+or the following one:
+
+$$
+\prod_{i=1}^{n} i + 3
+$$
+
+Very complicated syntax, right? A bunch of strange symbols and letters that you don't understand. But, what if I told 
+you that it's actually very simple? Let's see how it works.
+
+## Presenting the symbols
+
+<Image
+  src="/images/pi-sigma.png"
+  alt="Pi and Sigma symbols"
+  width={1366}
+  height={768}
+/>
+
+- The first symbol is the sum symbol. It's a capital Greek letter called **sigma**. It's written like this: $\sum$ and can be called as **"summation notation"**.
+
+- The second symbol is the product symbol. It's a capital Greek letter called **pi**. It's written like this: $\prod$ and can be called as **"product notation"**.
+
+## Understanding the anatomy of the notation
+
+<Image
+  src="/images/pi-sigma-notation-anatomy.png"
+  alt="Pi and Sigma notation anatomy"
+  width={1366}
+  height={768}
+/>
+
+- The first part is the symbol itself. It's either the sum symbol or the product symbol (In the image above, it's the sum symbol, but the product symbol is also valid).
+- The second part is the lower limit, or the starting index. It is written in the bottom part of the symbol.
+It's usually written as $i = 1$. The lower limit can assume any value, but it's usually 1. If you want to start from a different number, you can change it.
+- The third part is the upper limit, or the final index. It is written in the top part of the symbol. It's usually written as $n$.
+The upper limit is the number of times the sum or product is calculated (aka the number of iterations :eyes:).
+- The fourth and last part is the expression. It's the expression that is summed or multiplied for each value from the lower limit ($i$) to the upper limit ($n$). In the image above, it's
+generically represented as $X_i$.
+
+**OBS: The same rules apply for the $\prod$ (pi/product) symbol, the only difference is that, instead of summing, it multiplies the expression.**
+
+## Examples
+
+Now that we know the anatomy of the notation, let's see some examples.
+
+1. Let's say we want to calculate the sum of the first 15 natural numbers. We can do it like this:
+
+$$
+\sum_{i=1}^{15} i
+$$
+
+The result is 120.
+
+2. Let's say we want to calculate the product of the first 5 natural numbers, but we want to add 2 to each number before multiplying it. We can do it like this:
+
+$$
+\prod_{i=1}^{15} i + 2
+$$
+
+The result is 2520.
+
+3. Now, we want to calculate the sum of each number from 1 to 100, but we want to multiply each number by 2. We can do it like this:
+
+$$
+\sum_{i=1}^{100} i \times 2
+$$
+
+The result is 10100.
+
+4. We want a nested sum. We want to calculate the sum of the first 10 natural numbers, but we want to multiply each number by the sum of the first 20 natural numbers. We can do it like this:
+
+$$
+\sum_{i=1}^{10} i \times \sum_{j=1}^{20} j
+$$
+
+The result is 214250.
+
+5. Our last examples is a double sum.
+
+$$
+\sum_{i=1}^{10} \sum_{j=1}^{4} i \times j
+$$
+
+The result is 550.
+This last example is a bit more complicated, but it's still very simple. To solve this, we have to do the following:
+
+- Begin by calculating the rightmost sum, Like this: $(i \times 1) + (i \times 2) + (i \times 3) + (i \times 4)$. The result is $10i$
+- Then, we have to solve the leftmost sum using the result of the rightmost sum as the expression. Like this: $\sum_{i=1}^{10} 10i$.
