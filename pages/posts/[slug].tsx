@@ -10,9 +10,11 @@ import Link from 'next/link';
 import path from 'path';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeCodeTitles from 'rehype-code-titles';
+import rehypeKatex from 'rehype-katex';
 import rehypePrism from 'rehype-prism-plus';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 import Layout, { WEBSITE_HOST_URL } from '../../components/Layout';
 import { MetaProps } from '../../types/layout';
 import { PostType } from '../../types/post';
@@ -68,11 +70,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const mdxSource = await serialize(content, {
     // Optionally pass remark/rehype plugins
     mdxOptions: {
-      remarkPlugins: [remarkGfm],
+      remarkPlugins: [remarkGfm, remarkMath],
       rehypePlugins: [
         rehypeSlug,
         rehypeCodeTitles,
         rehypePrism,
+        rehypeKatex,
         [
           rehypeAutolinkHeadings,
           {
