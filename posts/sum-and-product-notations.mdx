@@ -99,3 +99,42 @@ This last example is a bit more complicated, but it's still very simple. To solv
 
 - Begin by calculating the rightmost sum, Like this: $(i \times 1) + (i \times 2) + (i \times 3) + (i \times 4)$. The result is $10i$
 - Then, we have to solve the leftmost sum using the result of the rightmost sum as the expression. Like this: $\sum_{i=1}^{10} 10i$.
+
+## Summation and product notations are just for loops :exploding_head:
+
+At this point, you might have figured out that the sum and product notations are just for loops. And you're right! They are literally just for loops.
+For example, considering the following sum:
+
+$$
+\sum_{i=1}^{333} 3 \times i
+$$
+
+We can translate this sum notation to a Typescript code like this:
+
+```typescript
+let sum: number = 0;
+
+for (let i = 1; i <= 333; i++) {
+  sum += 3 * i;
+}
+```
+
+Another example, given the following product notation:
+
+$$
+\prod_{i=1}^{10} i + 2
+$$
+
+We can translate this product notation to a Typescript code like this:
+
+```typescript
+let product: number = 1;
+
+for (let i = 1; i <= 10; i++) {
+  product *= i + 2;
+}
+```
+
+## Conclusion
+
+In this article, we learned what sum and product notations are, how to use them, and how to translate them to for loops.
