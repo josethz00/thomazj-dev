@@ -209,9 +209,9 @@ WHERE countryId = 3;
 The equivalent query in Relational Algebra is:
 
 $$
-ARGENTINIAN_PLAYERS \leftarrow \sigma_{countryId = 1}(players) \\
-BRAZILIAN_PLAYERS \leftarrow \sigma_{countryId = 3}(players) \\
-ARGENTINIAN_PLAYERS \cup BRAZILIAN_PLAYERS
+ArgentinianPlayers \leftarrow \sigma_{countryId = 1}(players) \\
+BrazilianPlayers \leftarrow \sigma_{countryId = 3}(players) \\
+ArgentinianPlayers \space \cup \space BrazilianPlayers
 $$
 
 In the expression above, we first query the players from Argentina, then we store the result in the ARGENTINIAN_PLAYERS variable.
@@ -223,4 +223,36 @@ The result of the union operation is a new table with the players from Argentina
 | 1  | Lionel Messi | leomessi@afa.com | +54 9111234-5678 | 1 |
 | 4  | Diego Maradona | maradona@afa.com | +54 911234-5678 | 1 |
 | 3  | Pele | pele@goat.br | +55 91234-5678 | 3 |
+
+### Difference ($-$)
+
+With the difference operator, we have as result the rows of the first table that are not present in the second table. It is represented by the symbol $-$.
+
+Everything that exists in the subset $A$ and does not exist in the superset $B$ is the difference between $A$ and $B$.
+
+You probably already saw an image like this one:
+
+![Difference](https://d1avenlh0i1xmr.cloudfront.net/7b50efc1-8a1c-4812-85ae-3413e9e7ef81/difference-of-sets---venn-diagram.jpg)
+
+#### Example
+
+Let's say we want to get all the players that are not brazilian. We can do that with the following query:
+
+```sql
+SELECT * FROM players
+EXCEPT
+SELECT * FROM players
+WHERE countryId = 3;
+```
+
+The equivalent query in Relational Algebra is:
+
+$$
+BrazilianPlayers \leftarrow \sigma_{countryId = 3}(players) \\
+players \space - \space BrazilianPlayers
+$$
+
+### Intersection ($\cap$)
+
+
 
