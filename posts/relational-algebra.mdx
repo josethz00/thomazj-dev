@@ -72,7 +72,7 @@ Before we dive into the details of each operation, let's define our dataset. We 
 
 ### Table 1: Players
 
-| id | name | email | phone | country_id |
+| id | name | email | phone | countryId |
 |----|------|-------|-------|-----|
 | 1  | Lionel Messi | leomessi@afa.com | +54 9111234-5678 | 1 |
 | 2  | Cristiano Ronaldo | cr7@siii.pt | +351 912345-678 | 2 |
@@ -89,7 +89,7 @@ Before we dive into the details of each operation, let's define our dataset. We 
 
 ### Table 3: Teams
 
-| id | name | country_id |
+| id | name | countryId |
 |----|------|------------|
 | 1  | Barcelona | 1 |
 | 2  | Juventus | 2 |
@@ -118,18 +118,18 @@ Let's say we want to select all the players from Argentina. We can do that with 
 
 ```sql
 SELECT * FROM players
-WHERE country_id = 1;
+WHERE countryId = 1;
 ```
 
 The equivalent query in Relational Algebra is:
 
 $$
-\sigma_{country_id = 1}(players)
+\sigma_{countryId = 1}(players)
 $$
 
 The result of the selection is a new table with only the players from Argentina:
 
-| id | name | email | phone | country_id |
+| id | name | email | phone | countryId |
 |----|------|-------|-------|-----|
 | 1  | Lionel Messi | leomessi@afa.com | +54 9111234-5678 | 1 |
 | 4  | Diego Maradona | maradona@afa.com | +54 911234-5678 | 1 |
@@ -140,7 +140,7 @@ Instead of selecting rows, like the selection operation, the project operation s
 allows us to filter the columns of a table.
 
 $$
-\prod_{columns}(table)
+\pi_{columns}(table)
 $$
 
 The columns argument is a list of column names. The result of the projection is a new table with only the columns specified in the columns argument.
@@ -156,7 +156,7 @@ SELECT name, email FROM players;
 The equivalent query in Relational Algebra is:
 
 $$
-\prod_{name, email}(players)
+\pi_{name, email}(players)
 $$
 
 The result of the projection is a new table with only the name and email columns:
@@ -167,3 +167,22 @@ The result of the projection is a new table with only the name and email columns
 | Cristiano Ronaldo | cr7@siii.pt |
 | Pele | pele@goat.br |
 | Diego Maradona | maradona@afa.com |
+
+We can also combine the selection and projection operations. Let's say we want to select the name and email of all the players from Argentina.
+
+```sql
+SELECT name, email FROM players
+WHERE countryId = 1;
+```
+
+The equivalent query in Relational Algebra is:
+
+$$
+\pi_{name, email} \space (\sigma_{countryId = 1}(players))
+$$
+
+In the expression above, we first apply the projection operation, to specify which columns we want to be returned by the query.
+Then, we apply the selection operation, to filter the rows of the table, containing only argentinian players.
+
+### Union ($\cup$)
+
