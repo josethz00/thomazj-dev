@@ -1,0 +1,169 @@
+---
+title: Math for devs - Relational Algebra
+description: Relational Algebra is a theoretical language for querying and manipulating data. It is the basis for SQL and other query languages.
+date: '2023-02-25'
+tags: ['math', 'databases', 'computerscience', 'tutorial']
+---
+
+Do you remember set theory? A math topic that you probably learned in elementary school, revisited in high school, and 
+then never again? Well, it's time to revisit it. Relational Algebra is a formal language based on set theory, and it's
+purpose is to query and manipulate data.
+
+## Why do I need to know this?
+
+Relational Algebra is the basis for SQL, the main language used in relational databases. Relational Algebra can also have
+some applications in NoSQL databases. If you want to understand how databases work "under the hood", you need to know
+the main concepts of Relational Algebra.
+
+## What is Relational Algebra?
+
+Relational algebra is a declarative language for querying and manipulating data. As SQL, you just specify which data you
+want, what conditions it should satisfy, and how it should be transformed (grouped, sorted, aggregated, etc). The database
+engine will take care of the rest, so you don't have to worry about how the data is stored, nor how to access it.
+
+<Image
+  src="/images/relational-algebra-pizza.png"
+  alt="Declarative Query Language Analogy"
+  width={1366}
+  height={768}
+/>
+
+In the image above, we have a woman who wants to order a pizza. She doesn't know how to make a pizza, she doesn't know
+how to cook it, she doesn't know how to deliver it. She just knows what she wants, and she knows how to ask for it. The
+waiter is the SQL/Relational Algebra engine, he is an interface between the woman and the chef. The chef is the database
+engine, he understands the order passed by the waiter, and he knows how to make the pizza.
+
+Declarative query languages usually hide the implementation details from the user. This is a good thing, because it allows
+the database engine to optimize the query execution, and it also allows the user to focus on the data, not on the
+algorithm required to access it.
+
+### SQL analogy
+
+How to order a pizza in SQL:
+
+```sql
+SELECT * FROM pizza
+WHERE size = 'large'
+AND flavor = 'pepperoni';
+```
+
+How to order a pizza in Relational Algebra:
+
+$$
+pizzas = \sigma_{size = "large" \space \space \wedge \space \space flavor = "pepperoni" }(pizza)
+$$
+
+## Relational Algebra Operations
+
+Ted Codd, a mathematician and computer scientist, proposed eight operations for Relational Algebra. These operations are:
+
+<b>
+- Selection ($\sigma$)
+- Projection ($\pi$)
+- Cartesian Product ($\times$)
+- Union ($\cup$)
+- Difference ($-$)
+- Join ($\bowtie$)
+- Division ($\div$)
+- Intersection ($\cap$)
+</b>
+
+Before we dive into the details of each operation, let's define our dataset. We will use a simple dataset with three tables:
+
+### Table 1: Players
+
+| id | name | email | phone | country_id |
+|----|------|-------|-------|-----|
+| 1  | Lionel Messi | leomessi@afa.com | +54 9111234-5678 | 1 |
+| 2  | Cristiano Ronaldo | cr7@siii.pt | +351 912345-678 | 2 |
+| 3  | Pele | pele@goat.br | +55 91234-5678 | 3 |
+| 4  | Diego Maradona | maradona@afa.com | +54 911234-5678 | 1 |
+
+### Table 2: Countries
+
+| id | name | code |
+|----|------|------|
+| 1  | Argentina | AR |
+| 2  | Portugal | PT |
+| 3  | Brazil | BR |
+
+### Table 3: Teams
+
+| id | name | country_id |
+|----|------|------------|
+| 1  | Barcelona | 1 |
+| 2  | Juventus | 2 |
+| 3  | Vasco da Gama | 3 |
+| 4  | Boca Juniors | 1 |
+| 5  | Real Madrid | 1 |
+| 6  | Benfica | 2 |
+| 7  | Santos | 3 |
+| 8  | River Plate | 1 |
+| 9  | Newells Old Boys | 1 |
+
+### Selection ($\sigma$)
+
+The selection operation is used to filter the rows of a table. It is represented by the symbol $\sigma$.
+
+$$
+\sigma_{condition}(table)
+$$
+
+The condition is a boolean expression that must be satisfied by the rows of the table. The result of the selection is a new (SET)
+table with only the rows that satisfy the condition.
+
+#### Example
+
+Let's say we want to select all the players from Argentina. We can do that with the following query:
+
+```sql
+SELECT * FROM players
+WHERE country_id = 1;
+```
+
+The equivalent query in Relational Algebra is:
+
+$$
+\sigma_{country_id = 1}(players)
+$$
+
+The result of the selection is a new table with only the players from Argentina:
+
+| id | name | email | phone | country_id |
+|----|------|-------|-------|-----|
+| 1  | Lionel Messi | leomessi@afa.com | +54 9111234-5678 | 1 |
+| 4  | Diego Maradona | maradona@afa.com | +54 911234-5678 | 1 |
+
+### Projection ($\pi$)
+
+Instead of selecting rows, like the selection operation, the project operation selects columns. It is represented by the symbol $\pi$. This operation
+allows us to filter the columns of a table.
+
+$$
+\prod_{columns}(table)
+$$
+
+The columns argument is a list of column names. The result of the projection is a new table with only the columns specified in the columns argument.
+
+#### Example
+
+Projection is very useful when we want to select only a few columns from a table. Let's say we want to select the name and email of all the players.
+
+```sql
+SELECT name, email FROM players;
+```
+
+The equivalent query in Relational Algebra is:
+
+$$
+\prod_{name, email}(players)
+$$
+
+The result of the projection is a new table with only the name and email columns:
+
+| name | email |
+|----|------|
+| Lionel Messi | leomessi@afa.com |
+| Cristiano Ronaldo | cr7@siii.pt |
+| Pele | pele@goat.br |
+| Diego Maradona | maradona@afa.com |
