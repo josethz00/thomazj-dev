@@ -71,7 +71,7 @@ Ted Codd, a mathematician and computer scientist, proposed eight operations for 
 *In this article, we will only cover the first six operations. The other four are more advanced, and they are not widely used
 in practice.*
 
-Before we dive into the details of each operation, let's define our dataset. We will use a simple dataset with three tables:
+Before we dive into the details of each operation, let's define our dataset. We will use a simple dataset with two tables:
 
 ### Table 1: Players
 
@@ -89,20 +89,6 @@ Before we dive into the details of each operation, let's define our dataset. We 
 | 1  | Argentina | AR |
 | 2  | Portugal | PT |
 | 3  | Brazil | BR |
-
-### Table 3: Teams
-
-| id | name | countryId |
-|----|------|------------|
-| 1  | Barcelona | 1 |
-| 2  | Juventus | 2 |
-| 3  | Vasco da Gama | 3 |
-| 4  | Boca Juniors | 1 |
-| 5  | Real Madrid | 1 |
-| 6  | Benfica | 2 |
-| 7  | Santos | 3 |
-| 8  | River Plate | 1 |
-| 9  | Newells Old Boys | 1 |
 
 ### Selection ($\sigma$)
 
@@ -257,3 +243,76 @@ $$
 
 ### Cartesian Product ($\times$)
 
+The cartesian product operation is the equivalent of the SQL CROSS JOIN operator. It is used to combine the rows
+and columns of two tables. For example, if you have a table "A" with 3 columns and a table "B" with 2 columns,
+the result of the cartesian product operation is a new table with 5 columns, containing every single combination of
+rows from table "A" and table "B".
+
+$$
+table_1 \times table_2
+$$
+
+#### Example
+
+Let's say we want to get all the possible combinations of players and countries. We can do that with the following query:
+
+```sql
+SELECT * FROM players
+CROSS JOIN countries;
+```
+
+The equivalent query in Relational Algebra is:
+
+$$
+players \space \times \space countries
+$$
+
+The result of the cartesian product operation is a new table with 5 columns, containing every single combination of
+rows from table "players" and table "countries":
+
+| id | name | email | phone | countryId | id | name | code |
+|----|------|-------|-------|-----|----|------|------|
+| 1  | Lionel Messi | leomessi@afa.com | +54 9111234-5678 | 1 | 1 | Argentina | AR |
+| 2  | Cristiano Ronaldo | cr7@siii.pt | +351 912345-678 | 2 | 2 | Portugal | PT |
+| 3  | Pele | pele@goat.br | +55 91234-5678 | 3 | 3 | Brazil | BR |
+| 4  | Diego Maradona | maradona@afa.com | +54 911234-5678 | 1 | 1 | Argentina | AR |
+
+### Join ($\bowtie$)
+
+The join operation is the equivalent of the SQL JOIN operator. It is used to combine the rows of two tables, based on a common column.
+The result of the join operation is a new table with the columns of both tables.
+
+$$
+table_1 \bowtie table_2
+$$
+
+To perform the join operation, the tables must have at least one column in common. If there are no common columns, the result of the join operation is an empty table.
+
+#### Example
+
+Let's say we want to get the name and email of all the players, along with the name of the country they are from. We can do that with the following query:
+
+```sql
+SELECT players.name, players.email, countries.name, clubs.name
+FROM players
+JOIN countries ON players.countryId = countries.id;
+```
+
+The equivalent query in Relational Algebra is:
+
+$$
+\pi_{name, email, countryName} \space (\rho_{countryId = id}(players \bowtie countries))
+$$
+
+In the expression above, we first apply the projection operation, to specify which columns we want to be returned by the query.
+Then, we apply the join operation, to combine the rows of the players table and the countries table, based on the countryId column.
+Finally, we apply the rename operation, to rename the id column to countryId.
+
+The result of the join operation is a new table with the name, email, and country name of all the players:
+
+| name | email | countryName |
+|------|-------|-------------|
+| Lionel Messi | leomessi@afa.com | Argentina |
+| Cristiano Ronaldo | cr7@siii.pt | Portugal |
+| Pele | pele@goat.br | Brazil |
+| Diego Maradona | maradona@afa.com | Argentina |
