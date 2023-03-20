@@ -9,13 +9,13 @@ type LayoutProps = {
   customMeta?: MetaProps;
 };
 
-export const WEBSITE_HOST_URL = 'https://nextjs-typescript-mdx-blog.vercel.app';
+export const WEBSITE_HOST_URL = 'https://thomazj.dev';
 
 const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
   return (
     <>
       <Head customMeta={customMeta} />
-      <header>
+      <header className="bg-white dark:bg-gray-900 z-10">
         <div className="max-w-5xl px-8 mx-auto">
           <div className="flex items-center justify-between py-6">
             <Navigation />
