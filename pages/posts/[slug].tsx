@@ -45,6 +45,7 @@ const PostPage = ({ source, frontMatter }: PostPageProps): JSX.Element => {
     type: 'article',
     tags: frontMatter.tags,
   };
+  
   return (
     <Layout customMeta={customMeta}>
       <article>
@@ -55,7 +56,7 @@ const PostPage = ({ source, frontMatter }: PostPageProps): JSX.Element => {
           {format(parseISO(frontMatter.date), 'MMMM dd, yyyy')}
         </p>
         <div className="prose dark:prose-dark">
-          <MDXRemote {...source} components={components} />
+          <MDXRemote {...source} components={components}/>
         </div>
       </article>
     </Layout>
